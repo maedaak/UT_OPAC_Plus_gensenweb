@@ -1,0 +1,154 @@
+<html>
+<head>
+<META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=UTF-8">
+<title>関連用語リストと東京大学OPAC及び国会図書館PORTAへのリンク</title>
+<script type="text/javascript" src="../js/prototype.js"></script>
+<script type="text/javascript">
+<!--
+function DB_search(keyword, keyword2, DB, id) {
+    var param1 = encodeURI(keyword);
+    var param2 = encodeURI(keyword2);
+    var session = document.getElementById("session").value;
+    // ベースとなるURLを設定
+    if (DB == "UT_OPAC") {
+        document.getElementById(id).src="../icon/opac_on.png";
+        var BASE_URL = 
+          'https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_search/?lang=0&amode=2&cmode=0&kywd=&smode=1&con1_exp=all&con2_exp=all&op2_exp=OR&dpmc_exp%5B%5D=all';
+
+        SEARCH_URL = BASE_URL + "&kywd1_exp=" + param1  + "&kywd2_exp=" + param2;
+        window.open(SEARCH_URL,"_blank");
+    }
+    else if (DB == "NDL") {
+        document.getElementById(id).src="../icon/porta_on.png";
+        polta_link(param1, param2, id);
+    }
+    else { alert("DBの指定が不正です") }
+}
+
+function polta_link(param1, param2, id) {
+    var url =
+      'zassaku_check.php';
+    var session = document.getElementById("session").value;
+    var pars = 'key=' + param2 + '&rank=' + id + '&session=' + session;
+    var myAjax = new Ajax.Request(
+       url,
+       {
+           method: 'get',
+           parameters: pars,
+           onComplete: function(req) {
+               polta_window(req, param1, param2);
+           }
+       });
+}
+
+function polta_window(originalRequest, param1, param2) {
+   res = originalRequest.responseText;
+   var BASE_URL =
+      "http://iss.ndl.go.jp/api/openurl?ndl_dpid=zassaku&any=";
+   if (res > 0){
+        SEARCH_URL = BASE_URL + param2;
+    }
+    else {
+        SEARCH_URL = BASE_URL + param1;
+    }
+    window.open(SEARCH_URL,"_blank");
+}
+
+// 関連用語からさらなる関連用語を得る
+function next_term(keyword, id, mode) {
+    // ベースとなるURLを設定
+    var MyCGI = "./UT_OPAC_Plus_gensenweb.cgi?text=";
+    var session = document.getElementById("session").value;
+    var filter  = document.getElementById("filter").value;
+    var search  = document.getElementById("search").value;
+    var site    = document.getElementById("site").value;
+    // キーワードが空のときはアラートを出す
+    // alert("キーワードを入れてください");
+    if (keyword == "") { alert("キーワードを入れてください"); }
+    else {
+       URI_parameter = encodeURI(keyword);
+       SEARCH_URL = MyCGI.concat(URI_parameter);
+       SEARCH_URL = SEARCH_URL + "&site=" + site;
+       SEARCH_URL = SEARCH_URL + "&mode=" + mode;
+       SEARCH_URL = SEARCH_URL + "&filter=" + filter;
+       SEARCH_URL = SEARCH_URL + "&searchengine=" + search;
+       SEARCH_URL = SEARCH_URL + "&rank=" + id;
+       SEARCH_URL = SEARCH_URL + "&session=" + session;
+       window.open(SEARCH_URL,"_blank");
+    }
+}
+
+// 提示した用語からシソーラスを使い関連語を提示
+function searchThesauras(id, mode) {
+    var url =
+       'thesauras.cgi';
+    var key_id = "key" + id;
+    var keyword = document.getElementById(key_id).value;
+    var session = document.getElementById("session").value;
+    var pars = 'key=' + keyword + '&mode=' + mode + '&session=' + session;
+    var myAjax = new Ajax.Request(
+       url,
+       {
+           method: 'get',
+           parameters: pars,
+           onComplete: function(req) {
+               showResponse(req, id);
+           }
+       });
+}
+
+function showResponse(originalRequest, id) {
+   res = originalRequest.responseText;
+   id = "thesauras" + id
+   d = document.getElementById(id);
+   if (res == ""){
+      res = "なし";
+   }
+   d.title=res;
+}
+// -->
+</script>
+
+</head>
+<body>
+<H1>「<font color="blue">[% term %]</font>」の関連用語リストと<BR />東京大学OPAC及び国立国会図書館サーチへのリンク</H1>
+<HR />
+<p><a href="#" onClick="window.close(); return false;">Windowを閉じる</a></p>
+「OPAC」ボタンをクリックすることで、その用語についての東京大学内所蔵図書を、「雑誌記事」ボ
+タンをクリックすることで雑誌記事索引（国立国会図書館サーチ）を調べることができます。</font>
+<HR />
+
+<H2><font color="blue">
+[% IF search == 0 %]
+    [% SWITCH site %]
+        [% CASE 1 %]
+            (東京大学内のサイトに限定して調査）
+        [% CASE 2 %]
+            (国内学術サイトに限定して調査）
+        [% CASE %]
+            (調査サイトを限定せず）
+    [% END %]
+[% END %]
+[% IF search == 1 %]
+    (TSUBAKIを使用)
+[% ELSIF search == 2 %]
+    (CiNiiを使用)
+[% END %]
+</font>
+
+[% SWITCH mode %]
+    [% CASE 1 %]
+       <BR /><font color="green">(「類義語」で関連学術用語探索範囲を拡大）</font>
+    [% CASE 2 %]
+       <BR /><font color="green">(「関連語」で関連学術用語探索範囲を拡大）</font>
+    [% CASE 3 %]
+       <BR /><font color="green">(「上位語」で関連学術用語探索範囲を拡大）</font>
+    [% CASE 4 %]
+       <BR /><font color="green">(「下位語」で関連学術用語探索範囲を拡大）</font>
+[% END %]
+</H2>
+<HR />
+<input type="hidden" id="session" name="session" value="[% session %]">
+<input type="hidden" id="filter"  name="filter"  value="[% filter %]">
+<input type="hidden" id="search"  name="search"  value="[% search %]">
+<input type="hidden" id="site"    name="site"    value="[% site %]">

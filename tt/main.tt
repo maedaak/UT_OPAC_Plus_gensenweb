@@ -1,0 +1,4 @@
+[% INCLUDE "header.tt" %]
+[% INCLUDE "thesauras.tt" %]
+[% INCLUDE "result.tt" %]
+[% INCLUDE "footter.tt" %]

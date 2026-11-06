@@ -1,0 +1,25 @@
+<h2><font color="green">重要度順</font>の関連用語リスト</h2>
+<P />
+シソーラスに登録されている語があった場合、<img src="../icon/simmular.png" alt="Sim">アイコンを表示。アイコンの上にカーソルを乗せるとシソーラスの類義語を（あれば）表示します。
+<HR />
+<ul>
+[% IF gensen.size() > 0 %]
+    [% LOOP = 0 %]
+    [% FOREACH v = gensen %]
+        <LI><A href="JavaScript:DB_search('[% v.term %]', '[% v.term2 %]', 'UT_OPAC', 'opac[% LOOP %]')">
+        <IMG id="opac[% LOOP %]" SRC="../icon/opac_off.png" BORDER="0" ALT="opac"></A>&nbsp;&nbsp;
+        <A href="JavaScript:DB_search('[% v.term %]', '[% v.term2 %]', 'NDL', 'porta[% LOOP %]');">
+        <IMG id="porta[% LOOP %]" SRC="../icon/porta_off.png" BORDER="0" ALT="NDL Search"></A>&nbsp;&nbsp;
+        <font size="+[% v.size %]">
+        <a href="#" onClick="next_term('[% v.term2 %]', [% LOOP %], 0); return fauls;">[% v.term2 %]</a></font>
+
+        [% IF v.simular_exsist == 1 %]
+            <IMG id="thesauras[% LOOP %]" src="../icon/simmular.png" title="" onMouseOver="searchThesauras([% LOOP %], 1)">
+            <input type="hidden" id="key[% LOOP %]" value="[% v.uri_escaped_term2 %]">
+        [% END %]
+        [% LOOP = LOOP + 1 %]
+    [% END %]
+    </ul>
+[% ELSE %]
+    抽出できた関連用語はありませんでした
+[% END %]

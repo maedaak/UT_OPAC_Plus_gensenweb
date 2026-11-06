@@ -1,0 +1,26 @@
+[% IF thesauras.size() > 0 %]
+    <H2>
+    <font color="green">シソーラスでは「[% term %]」について、以下のエントリーが見つかりました。</font>
+    </H2>
+    [% SET LOOP1 = 1 %]
+    [% FOREACH v = thesauras %]
+        [% v.name %]:&nbsp;[
+        [% SET LOOP2 = 0 %]
+        [% FOREACH word = v.words %]
+            [% IF LOOP2 > 0 %]&nbsp;/&nbsp;[% END %]
+            <a href="#" onclick="next_term('[% word %]', 'th[% LOOP1 %]', 0); return false;">
+                [% word %]</a>
+            [% LOOP2 = LOOP2 + 1 %]
+        [% END %]
+        ]
+        <BR />
+        &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;
+        <small>
+        <a href="#" onclick="next_term('[% term %]', 're[% LOOP1 %]', [% v.mode %]); return false;">
+        [[% v.name %]に範囲を広げて関連語を再探索]</a>
+        </small>
+        <P />
+        [% LOOP1 = LOOP1 + 1 %]
+    [% END %]
+    <HR />
+[% END %]

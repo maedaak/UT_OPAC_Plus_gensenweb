@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>東京大学OPAC Plus "言選Web" ～関連学術用語のリストを得た上で、東京大学OPACにナビゲートする～</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <!-- カスタムスタイルシート -->
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="site-header">
+    <div class="container text-center">
+      <h1 class="site-title mb-2">東京大学OPAC Plus "言選Web"</h1>
+      <p class="site-subtitle mb-0">関連学術用語のリストを得た上で、東京大学OPACもしくは雑誌記事索引（国会図書館サーチ）にナビゲートする！</p>
+    </div>
+  </header>
+
+  <!-- メインコンテンツ -->
+  <main class="container mb-5">
+    
+    <!-- 検索フォームカード -->
+    <div class="main-card">
+      <div class="guide-box">
+        <ol>
+          <li>調査したい日本語の専門用語（フレーズ）を入れて「実行」ボタンをクリック！</li>
+          <li><a href="https://cir.nii.ac.jp/" target="_blank" rel="noopener">CiNii Research</a> 等から調べた「関連学術用語」と、それをキーワードにした <a href="https://opac.dl.itc.u-tokyo.ac.jp/" target="_blank" rel="noopener">東京大学OPAC</a>・雑誌記事索引（国会図書館サーチ）リンクを提示します。</li>
+          <li>入力のフレーズが最新の日本語シソーラス（<a href="https://bond-lab.github.io/wnja/" target="_blank" rel="noopener">日本語WordNet 2.1</a>）にマッチした場合、その情報（類義語・関連語・上位語・下位語）も提示します。</li>
+          <li>抽出した関連語にシソーラスの登録語があった場合、「類似語」アイコン <img src="./icon/simmular.png" alt="類似語" style="height:18px;"> も表示します（マウスを乗せると類義語を表示）。</li>
+        </ol>
+      </div>
+
+      <!-- フォーム -->
+      <form id="search-form" class="search-form-area" autocomplete="off">
+        <div class="mb-3">
+          <label for="keyword-input" class="form-label fw-bold">専門用語（キーワード）を入力：</label>
+          <div class="input-group">
+            <input 
+              type="text" 
+              class="form-control keyword-input" 
+              id="keyword-input" 
+              name="text" 
+              placeholder="調査したい専門用語を入力してください（例: クローン羊）" 
+              maxlength="50" 
+              autofocus 
+              required
+            >
+            <button type="submit" class="btn btn-primary btn-search" id="submit-btn">
+              <span class="spinner-border spinner-border-sm me-1 d-none" id="btn-spinner" role="status" aria-hidden="true"></span>
+              実行
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-clear" id="clear-btn">
+              入力のクリア
+            </button>
+          </div>
+          <!-- リアルタイム文字数カウンター（上限50文字） -->
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="sample-words-area mt-2">
+              <span>入力例:</span>
+              <a href="#" class="sample-tag" data-word="クローン羊">クローン羊</a>
+              <a href="#" class="sample-tag" data-word="集合知">集合知</a>
+              <a href="#" class="sample-tag" data-word="人工知能">人工知能</a>
+              <a href="#" class="sample-tag" data-word="生命倫理">生命倫理</a>
+              <a href="#" class="sample-tag" data-word="再生可能エネルギー">再生可能エネルギー</a>
+            </div>
+            <div id="char-counter" class="char-counter">0 / 50 文字</div>
+          </div>
+        </div>
+
+        <!-- 探索オプション -->
+        <div class="search-options-area">
+          <div class="row align-items-center">
+            <div class="col-md-6 mb-2 mb-md-0">
+              <label class="form-label fw-bold mb-1">● 関連語探索の情報源：</label>
+              <select class="form-select form-select-sm" id="search-engine" name="searchengine" disabled>
+                <option value="cinii" selected>CiNii Research (NII学術情報ナビゲータ)</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold mb-1">● 提示精度の設定：</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="filter-cinii" name="filter" value="1">
+                <label class="form-check-label" for="filter-cinii">
+                  CiNiiでヒットする用語に限定 <small class="text-muted">（確認のため数十秒程度かかる場合があります）</small>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- 進行状況・ローディングカード -->
+    <div id="status-card" class="status-card">
+      <div class="d-flex align-items-center mb-2">
+        <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+        <div id="status-message" class="fw-bold text-primary">学術情報を取得しています...</div>
+      </div>
+      <div class="progress" style="height: 6px;">
+        <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 0%;"></div>
+      </div>
+    </div>
+
+    <!-- エラーメッセージ -->
+    <div id="error-message" class="alert alert-danger shadow-sm mb-4" style="display: none;" role="alert"></div>
+
+    <!-- 0件メッセージ -->
+    <div id="empty-message" class="alert alert-warning shadow-sm mb-4" style="display: none;" role="alert"></div>
+
+    <!-- 検索結果コンテナ -->
+    <div id="result-container" style="display: none;">
+      
+      <!-- 検索キーワードヘッダー -->
+      <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+        <h2 class="h4 mb-0">
+          「<span id="current-search-title" class="text-primary fw-bold"></span>」の関連用語リスト
+        </h2>
+        <div>
+          <span id="search-mode-badge" class="badge bg-primary">通常探索</span>
+        </div>
+      </div>
+
+      <!-- シソーラス情報セクション（日本語WordNet 2.1） -->
+      <div id="thesaurus-section" style="display: none;"></div>
+
+      <!-- 用語リストセクション -->
+      <div class="terms-card">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h3 class="h5 text-success fw-bold mb-0">重要度順の関連用語リスト</h3>
+          <small class="text-muted">アイコンをクリックすると東大OPACまたは国会図書館サーチが開きます</small>
+        </div>
+        <div class="mb-3 text-muted small bg-light p-2 rounded">
+          <img src="./icon/simmular.png" alt="類似語" style="height:16px;"> アイコンの上にカーソルを乗せると、日本語WordNetから求めた類義語を表示します。用語名をクリックすると、その用語で言選Webを再探索します。
+        </div>
+
+        <div id="terms-list-section"></div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- フッター -->
+  <footer class="site-footer">
+    <div class="container text-center">
+      <div class="mb-2 footer-links">
+        <a href="https://github.com/maedaak/gensen/tree/main/gensenweb" target="_blank" rel="noopener">言選Web (TermExtract) GitHub</a>
+        &nbsp;|&nbsp;
+        <a href="https://bond-lab.github.io/wnja/" target="_blank" rel="noopener">日本語WordNet (Francis Bond Lab)</a>
+        &nbsp;|&nbsp;
+        <a href="https://cir.nii.ac.jp/" target="_blank" rel="noopener">CiNii Research</a>
+        &nbsp;|&nbsp;
+        <a href="news.html">修正記録</a>
+      </div>
+      <p class="mb-1">
+        Powered by <a href="https://github.com/maedaak/gensen/tree/main/gensenweb" target="_blank" rel="noopener">"TermExtract" (言選Web)</a>
+        &nbsp;•&nbsp; Powered by <a href="https://ndlsearch.ndl.go.jp/" target="_blank" rel="noopener">国立国会図書館サーチ</a>
+        &nbsp;•&nbsp; Powered by <a href="https://bond-lab.github.io/wnja/" target="_blank" rel="noopener">日本語WordNet (最新版 2.1)</a>
+        &nbsp;•&nbsp; Powered by <a href="https://cir.nii.ac.jp/" target="_blank" rel="noopener">CiNii Research API</a>
+      </p>
+      <p class="mb-0 text-secondary">
+        Copyright &copy; 2008- Akira Maeda All Rights Reserved.
+      </p>
+    </div>
+  </footer>
+
+  <!-- スクリプトの読み込み -->
+  <!-- 1. 設定 -->
+  <script src="./js/config.js"></script>
+  <!-- 2. セキュリティ（JavaScriptインジェクション対策・エスケープ） -->
+  <script src="./js/security.js"></script>
+  <!-- 3. kuromoji.js -->
+  <script src="./js/kuromoji.js"></script>
+  <!-- 4. 言選Web (gensenweb-kuromojijs) -->
+  <script src="./js/gensenwebKuromojijs.js"></script>
+  <!-- 5. 日本語WordNet (最新 2.1) -->
+  <script src="./js/wordnet.js"></script>
+  <!-- 6. CiNii Research API クライアント -->
+  <script src="./js/cinii.js"></script>
+  <!-- 7. 言選Web 用語抽出コントローラー -->
+  <script src="./js/termextract.js"></script>
+  <!-- 8. メインアプリケーション -->
+  <script src="./js/app.js"></script>
+
+</body>
+</html>

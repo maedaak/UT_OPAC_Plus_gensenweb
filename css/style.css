@@ -1,0 +1,307 @@
+/* ==========================================================================
+   東京大学OPAC Plus "言選Web" メインスタイルシート
+   ========================================================================== */
+
+:root {
+  --primary-color: #0d6efd;
+  --primary-dark: #0a58ca;
+  --secondary-color: #6c757d;
+  --accent-green: #198754;
+  --bg-light: #f8f9fa;
+  --border-color: #dee2e6;
+  --text-dark: #212529;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  color: var(--text-dark);
+  background-color: #f5f7fb;
+  line-height: 1.6;
+}
+
+/* ヘッダー */
+.site-header {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: #ffffff;
+  padding: 2.5rem 0 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.site-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.site-subtitle {
+  font-size: 1.05rem;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+/* メインコンテナ */
+.main-card {
+  border: none;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* 説明文 */
+.guide-box {
+  background-color: #eef4fc;
+  border-left: 4px solid var(--primary-color);
+  padding: 1rem 1.25rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.guide-box ol {
+  margin-bottom: 0;
+  padding-left: 1.25rem;
+}
+
+.guide-box li {
+  margin-bottom: 0.35rem;
+}
+
+/* 入力エリア */
+.search-form-area {
+  margin-bottom: 1.5rem;
+}
+
+.input-group-custom {
+  position: relative;
+}
+
+.keyword-input {
+  border-radius: 8px !important;
+  font-size: 1.15rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid #cbd5e1;
+  transition: all 0.2s ease;
+}
+
+.keyword-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+}
+
+.char-counter {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-top: 0.35rem;
+}
+
+.btn-search {
+  padding: 0.75rem 1.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(13, 110, 253, 0.3);
+}
+
+.btn-clear {
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+}
+
+/* サンプルキーワード */
+.sample-words-area {
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.sample-tag {
+  display: inline-block;
+  background-color: #f1f5f9;
+  color: #334155;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  margin-right: 0.4rem;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  border: 1px solid #e2e8f0;
+}
+
+.sample-tag:hover {
+  background-color: #e2e8f0;
+  color: var(--primary-dark);
+}
+
+/* オプション */
+.search-options-area {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-top: 1.25rem;
+  border: 1px solid #e2e8f0;
+  font-size: 0.95rem;
+}
+
+/* 進行状況カード */
+.status-card {
+  display: none;
+  border: none;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+}
+
+/* シソーラスカード */
+.thesaurus-card {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.thesaurus-card .card-header {
+  font-size: 1.05rem;
+}
+
+.thesaurus-row {
+  line-height: 1.8;
+  padding: 0.25rem 0;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.thesaurus-row:last-child {
+  border-bottom: none;
+}
+
+.thesaurus-word-link {
+  color: #0f172a;
+  border-bottom: 1px dotted #94a3b8;
+  padding: 0 2px;
+  transition: color 0.15s;
+}
+
+.thesaurus-word-link:hover {
+  color: var(--accent-green);
+  border-bottom-style: solid;
+}
+
+.expand-search-btn {
+  font-size: 0.8rem;
+  padding: 0.15rem 0.5rem;
+  vertical-align: middle;
+}
+
+/* 用語リスト */
+.terms-card {
+  border: none;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  padding: 1.75rem;
+}
+
+.term-item {
+  transition: background-color 0.15s ease;
+  border-color: #edf2f7;
+}
+
+.term-item:hover {
+  background-color: #f8fafc;
+}
+
+.action-icon-btn {
+  display: inline-block;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+.action-icon-btn:hover {
+  transform: scale(1.1);
+}
+
+.action-icon {
+  height: 22px;
+  width: auto;
+  vertical-align: middle;
+}
+
+.simmular-icon {
+  height: 18px;
+  width: auto;
+  vertical-align: middle;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.simmular-icon:hover {
+  transform: scale(1.2);
+}
+
+/* 用語サイズの階層 */
+.term-name-link {
+  transition: color 0.15s ease;
+  line-height: 1.4;
+}
+
+.term-name-link:hover {
+  color: var(--primary-dark);
+  text-decoration: underline !important;
+}
+
+.size-level-3 {
+  font-size: 1.45rem;
+  color: #0369a1;
+}
+
+.size-level-2 {
+  font-size: 1.25rem;
+  color: #0284c7;
+}
+
+.size-level-1 {
+  font-size: 1.1rem;
+  color: #0ea5e9;
+}
+
+.size-level-0 {
+  font-size: 0.98rem;
+  color: #38bdf8;
+}
+
+/* フッター */
+.site-footer {
+  background-color: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  padding: 2rem 0;
+  margin-top: 4rem;
+  font-size: 0.88rem;
+  color: #64748b;
+}
+
+.footer-links a {
+  color: #475569;
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+/* レスポンシブ調整 */
+@media (max-width: 768px) {
+  .site-title {
+    font-size: 1.5rem;
+  }
+  .main-card {
+    padding: 1.25rem;
+  }
+  .size-level-3 {
+    font-size: 1.25rem;
+  }
+  .size-level-2 {
+    font-size: 1.15rem;
+  }
+}
+
